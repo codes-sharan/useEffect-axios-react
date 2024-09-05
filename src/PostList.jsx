@@ -1,13 +1,12 @@
 // src/PostList.js
-//import React from "react";
-
 import { useState, useEffect } from "react";
-import axios from "axios"; // Import Axios
+import axios from "axios";
 
 const PostList = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [activePost, setActivePost] = useState(null); // Track the clicked post
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -15,7 +14,7 @@ const PostList = () => {
         const response = await axios.get(
           "https://jsonplaceholder.typicode.com/posts"
         );
-        setPosts(response.data); // Axios returns data inside a "data" field
+        setPosts(response.data);
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -24,21 +23,33 @@ const PostList = () => {
     };
 
     fetchPosts();
-  }, []); // Dependency array to run the effect only once on component mount
+  }, []);
+
+  const handleClick = (id) => {
+    setActivePost(activePost === id ? null : id); // Toggle active post
+  };
 
   return (
-    <div>
+    <div className="post-list">
       <h1>Post List</h1>
       {loading && <p>Loading posts...</p>}
       {error && <p>Error: {error}</p>}
-      <ul>
+      <div className="card-container">
         {posts.map((post) => (
-          <li key={post.id}>
-            <strong>{post.title}</strong>
-            <p>{post.body}</p>
-          </li>
+          <div
+            key={post.id}
+            className="card"
+            onClick={() => handleClick(post.id)}
+          >
+            <h3>{post.title}</h3>
+            {activePost === post.id && (
+              <div className="card-content">
+                <p>{post.body}</p>
+              </div>
+            )}
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };

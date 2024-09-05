@@ -1,5 +1,6 @@
 // src/App.js
-// import React from "react";
+
+import "./App.css"; // Import your styles
 import PostList from "./PostList";
 
 const App = () => {
